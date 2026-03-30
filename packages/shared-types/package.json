@@ -1,0 +1,18 @@
+{
+  "name": "@smart-hospital/shared-types",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@smart-hospital/eslint-config": "workspace:*",
+    "@smart-hospital/tsconfig": "workspace:*",
+    "typescript": "^5.5.0"
+  }
+}

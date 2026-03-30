@@ -2,117 +2,149 @@
 
 ## Project Overview
 
-**For-Smart-Hospital** is a Smart Hospital management project. It is currently in the **initial scaffolding phase** — the repository contains only boilerplate files (license, contributing guidelines, code of conduct) and no source code has been implemented yet.
+**For-Smart-Hospital** is a Smart Hospital Workflow Optimization platform — Package 1 of the Smart Hospital system. It manages patient flow, bed occupancy, staff scheduling, task management, and department coordination.
 
 - **License:** Apache-2.0
 - **Copyright:** Amazon.com, Inc. or its affiliates
 - **Code of Conduct:** [Amazon Open Source Code of Conduct](https://aws.github.io/code-of-conduct)
 
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS |
+| Backend | Node.js, Express.js, TypeScript |
+| Database | PostgreSQL 16 with Prisma ORM |
+| Real-time | Socket.IO |
+| Auth | JWT (access + refresh tokens) |
+| Validation | Zod (shared between frontend/backend) |
+| Monorepo | pnpm 9.15 workspaces + Turborepo |
+| Containers | Docker + docker-compose |
+
 ## Repository Structure
 
 ```
 For-Smart-Hospital/
-├── CLAUDE.md              # This file — AI assistant guidance
-├── CODE_OF_CONDUCT.md     # Amazon Open Source Code of Conduct
-├── CONTRIBUTING.md         # Contribution guidelines
-├── LICENSE                 # Apache-2.0 License
-├── NOTICE                  # Copyright notice
-└── README.md              # Project README (placeholder — needs content)
+├── apps/
+│   ├── api/                    # Express.js backend (port 4000)
+│   │   ├── prisma/             # schema.prisma + seed.ts
+│   │   └── src/
+│   │       ├── modules/        # auth, patients, beds, tasks, staff, departments, notifications
+│   │       ├── middleware/      # auth, validate, errorHandler
+│   │       └── config/         # db, env, socket
+│   └── web/                    # Next.js frontend (port 3000)
+│       ├── app/                # dashboard, patients, beds, tasks, staff, departments
+│       ├── components/         # Sidebar, Header, ui/
+│       └── lib/                # api client, cn utility
+├── packages/
+│   ├── shared-types/           # Zod schemas, enums, TypeScript types (API contract)
+│   ├── tsconfig/               # base, node, nextjs configs
+│   └── eslint-config/          # shared ESLint rules
+├── docker-compose.yml
+├── turbo.json
+├── pnpm-workspace.yaml
+└── .env.example
 ```
 
-**Current state:** No source code, no configuration files, no build system, no tests, no CI/CD pipeline. The project needs to be built from scratch.
+## Commands
 
-## Development Status
+### Install Dependencies
+```bash
+pnpm install
+```
 
-This repository is at the **very beginning** of development. The following have NOT yet been set up:
+### Start Development (all apps)
+```bash
+pnpm dev
+```
 
-- [ ] Tech stack selection and project initialization
-- [ ] Source code (frontend and/or backend)
-- [ ] Package manager configuration (package.json, requirements.txt, etc.)
-- [ ] Build and dev scripts
-- [ ] Database schema and models
-- [ ] API definitions
-- [ ] Testing framework and tests
-- [ ] CI/CD pipeline
-- [ ] Docker / containerization
-- [ ] Environment configuration (.env, .gitignore)
-- [ ] Proper README with project description
+### Build All
+```bash
+pnpm build
+```
+
+### Lint All
+```bash
+pnpm lint
+```
+
+### Run Tests
+```bash
+pnpm test
+```
+
+### Database Commands
+```bash
+pnpm db:migrate    # Run Prisma migrations
+pnpm db:seed       # Seed with demo data
+pnpm db:studio     # Open Prisma Studio GUI
+```
+
+### Docker
+```bash
+docker-compose up -d    # Start all services
+docker-compose down     # Stop all services
+```
+
+## Developer Workstreams
+
+Three developers work in parallel with clear module boundaries:
+
+### Developer A — Patient Flow & Core Infrastructure
+- **Owns:** `modules/auth/`, `modules/patients/`, `app/dashboard/`, `app/patients/`
+- Auth (JWT login/register, role-based guards)
+- Patient CRUD + admission/discharge workflows
+- Main dashboard with summary metrics
+
+### Developer B — Bed Management & Task Management
+- **Owns:** `modules/beds/`, `modules/tasks/`, `app/beds/`, `app/tasks/`
+- Real-time bed tracking via Socket.IO
+- Bed grid with color-coded status
+- Task board with priority and assignment
+
+### Developer C — Staff Scheduling & Department Coordination
+- **Owns:** `modules/staff/`, `modules/departments/`, `modules/notifications/`, `app/staff/`, `app/departments/`
+- Staff directory and shift calendar
+- Department metrics and capacity tracking
+- Inter-department transfer requests
+- In-app notifications
+
+## Shared Contracts
+
+All API types and validation schemas live in `packages/shared-types/`. Developers define their Zod schemas there first, then build implementations. This prevents type drift between frontend and backend.
+
+## Conventions
+
+### Code Style
+- TypeScript strict mode everywhere
+- Zod for request validation (via `validate` middleware)
+- Prisma for all database access (no raw SQL)
+- Socket.IO events follow `module:event-name` pattern (e.g., `bed:status-change`)
+
+### API Response Format
+```typescript
+{ success: boolean, data?: T, error?: string, message?: string }
+```
+
+### Module Structure (backend)
+Each module in `apps/api/src/modules/<name>/` contains:
+- `<name>.routes.ts` — Express router with all endpoints
+
+### Database
+- Schema: `apps/api/prisma/schema.prisma` (single file, sectioned by module)
+- Seed: `apps/api/prisma/seed.ts`
+- All models use UUID primary keys
 
 ## Contribution Workflow
 
 Per `CONTRIBUTING.md`:
-
 1. Work against the latest source on the **main** branch
 2. Check existing open/recently merged PRs before starting work
-3. Open an issue to discuss significant work before implementing
-4. Fork the repository, make focused changes, ensure local tests pass
-5. Submit a pull request with clear commit messages
-6. Watch for automated CI failures and respond to review feedback
+3. Fork the repository, make focused changes, ensure local tests pass
+4. Submit a pull request with clear commit messages
 
 ## Security
 
 - Report security issues via [AWS vulnerability reporting](http://aws.amazon.com/security/vulnerability-reporting/)
 - Do **not** create public GitHub issues for security vulnerabilities
-
-## Conventions for AI Assistants
-
-### General Guidelines
-
-- This is an Apache-2.0 licensed project — respect license headers and attribution
-- Keep the `NOTICE` file updated if adding new dependencies with attribution requirements
-- Follow the contribution guidelines in `CONTRIBUTING.md`
-- Update this `CLAUDE.md` file when adding new tech stack, commands, or conventions
-
-### When Adding Source Code
-
-- Choose an appropriate directory structure for the selected tech stack
-- Add a `.gitignore` appropriate for the chosen language/framework
-- Set up a package manager and lock file
-- Include build, test, and dev scripts
-- Add environment variable examples (`.env.example`) — never commit actual secrets
-- Update `README.md` with setup instructions, prerequisites, and usage
-
-### When Adding Tests
-
-- Place tests alongside source code or in a dedicated `tests/` directory
-- Document the test command in this file once established
-- Aim for meaningful test coverage on critical paths
-
-### When Adding CI/CD
-
-- Use GitHub Actions (`.github/workflows/`) as the CI/CD platform
-- Include linting, testing, and build steps
-- Document pipeline behavior in this file once established
-
-## Commands
-
-_No build, test, or dev commands exist yet. Update this section when the tech stack is initialized._
-
-<!--
-Example format for when commands are added:
-
-### Install Dependencies
-```bash
-npm install
-```
-
-### Run Development Server
-```bash
-npm run dev
-```
-
-### Run Tests
-```bash
-npm test
-```
-
-### Build for Production
-```bash
-npm run build
-```
-
-### Lint
-```bash
-npm run lint
-```
--->
+- Never commit `.env` files or secrets
