@@ -1,2 +1,21 @@
-fastapi>=0.115.0,<1.0.0
-uvicorn[standard]>=0.30.0,<1.0.0
+git checkout claude/setup-build-environment-giwi7
+mkdir -p api
+cat > api/index.py <<'EOF'
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/")
+def root():
+    return {"status": "ok"}
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+EOF
+
+git add api/index.py
+git commit -m "Add FastAPI app entrypoint with root and health endpoints"
+git push origin claude/setup-build-environment-giwi7
