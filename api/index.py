@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 
-app = FastAPI()
+app = FastAPI(title="Smart Hospital API")
 
 
 @app.get("/")
-def root():
+async def root():
     return {"status": "ok"}
 
 
 @app.get("/health")
-def health():
+async def health():
     return {"status": "healthy"}
