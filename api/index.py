@@ -4,10 +4,10 @@ app = FastAPI()
 
 
 @app.get("/")
-async def root():
+def root():
     return {"status": "ok"}
 
 
 @app.get("/health")
-async def health():
-    return {"status": "ok"}
+def health():
+    return {"status": "healthy"}
