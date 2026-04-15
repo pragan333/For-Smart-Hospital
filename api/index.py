@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-app = FastAPI(title="Smart Hospital API")
+app = FastAPI()
 
 
 @app.get("/")
