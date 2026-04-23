@@ -1,0 +1,11 @@
+{
+  "name": "for-smart-hospital",
+  "version": "0.1.0",
+  "description": "Smart Hospital management project",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Build complete'",
+    "dev": "echo 'No dev server configured yet'"
+  },
+  "license": "Apache-2.0"
+}
