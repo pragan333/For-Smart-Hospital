@@ -3,6 +3,7 @@ __pycache__/
 *$py.class
 *.so
 .env
+.env.local
 .venv/
 venv/
 env/
@@ -15,3 +16,5 @@ dist/
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
+node_modules/
+.vercel

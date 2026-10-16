@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "for-smart-hospital"
+version = "0.1.0"
+description = "Smart Hospital management project"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [{name = "pragan333"}]
+
+# TODO: add runtime dependencies once they are known
+# dependencies = []
+
+[tool.setuptools]
+# This repo currently has no Python package/module directories.
+# When you add code, either:
+#  - create a package dir and list it here, or
+#  - switch to setuptools' automatic discovery.
+packages = []
